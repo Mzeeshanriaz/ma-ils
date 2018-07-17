@@ -10,6 +10,8 @@
             background-color: #f9f9f9;
         }
         a:hover,a {color: #ffffff;text-decoration: none;}
+        .col-md-2 a:hover,.col-md-2 a {color: #000000;text-decoration: none;
+            width:100%;font-size:medium;}
         table td a:hover,table td a{color: #000000;text-decoration: none;}
         #newDiv{display: none;
             width:510px;
@@ -17,7 +19,7 @@
             float: right;
             bottom:0;
             position: fixed;
-            height:362px;}
+            height:392px;}
         #inner{
             position: absolute;      width:507px; height: 360px;
         }
@@ -52,45 +54,59 @@
 <h1>All Email messages</h1>
 <div class="container-fluid">
     <div class="row ">
-        <div class="col-md-2">
+        <div class="col-md-2"  style="background-color: white;">
             @include('layouts.menu')
         </div>
-        <div class=" col-md-8">
+        <div class=" col-md-10">
+            <form action="/trash" method="post">@csrf
+            @if($box!='trash')
+            Move to:<button type="submit" class="btn btn-danger">Trash</button>
+            @endif
+            <br/>
+            <div class="row">
+                <h2 style="background-color: white;color: #ffffff;">
+                    <div class="col-md-4 text-center"><a href="/gmail/inbox/1">Primay</a></div>
+                    <div class="col-md-4 text-center"><a href="/gmail/inbox/2">Social</a></div>
+                    <div class="col-md-4 text-center"><a href="/gmail/inbox/3">Promotions</a></div>
+                </h2>
+            </div>
             <table class="table table-striped" >
                 @foreach( $messages as $message )
                     <tr>
                         <td>
+                            <input type="checkbox" name="email[]" value="{{$message->email_id}}" />
                             <a href="{{route('message',['id'=>$message->email_id])}}" >
                             <b>{{$message->name}}</b>
                             </a>
                         </td>
                         <td>
                             <a href="{{route('message',['id'=>$message->email_id])}}" >
-                                {{$message->subject}}
+                                @if($message->is_unread)
+                                    <b>{{$message->subject}}</b>
+                                @else
+                                    {{$message->subject}}
+                                    @endif
+                            </a>
+                            <sup class="text-right">
+                                @if($message->attachments()->exists())
+                                    <img height="20px" src="/mail_attachment.png" align="right"
+                                    @endif
+                            </sup>
+                        </td>
+                        <td style="min-width: 80px;">
+
+                            <a href="{{route('message',['id'=>$message->email_id])}}" >
+                                <b>{{date('M d', strtotime($message->dated))}}</b>
                             </a>
                         </td>
                     </tr>
                 @endforeach
             </table>
+            {{$messages->links()}}
+            </form>
         </div>
     </div>
 </div>
-<div id="newDiv">
-    <div id="inner">
-        <div id="heading">
-            New Message
-            <a id="close" class="m-link"> X </a>
-        </div>
-        <form name="pop-form" method="post" action="{{route('send.email')}}">
-            @csrf
-            <input type="email" name="email" class="to" placeholder="To" />
-            <input type="text" name="subject" class="to" placeholder="Subject" />
-            <textarea name="message" class="message" placeholder="Message" ></textarea>
-            <div>
-                <button type="submit" class="btn btn-info">  Send  </button>
-            </div>
-        </form>
-    </div>
-</div>
+@include('layouts.send')
 </body>
 </html>

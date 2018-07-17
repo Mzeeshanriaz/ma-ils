@@ -1,17 +1,22 @@
 <?php
 namespace App\Http\Controllers;
 use App\Account;
+use App\Repositories\AccountRepository;
 use Dacastro4\LaravelGmail\Facade\LaravelGmail;
 use Illuminate\Http\Request;
-use Mockery\Exception;
 class AccountController extends Controller
 {
-    public function __construct()
+    protected $ac;
+    public function __construct(AccountRepository $ac)
     {
+        $this->ac = $ac;
         $this->middleware('IsGmailLogin')->only('insert');
     }
-    public function create(){
-        if(isset($_GET['error'])) return $_GET['error'];
+    public function index(){
+        return $this->ac->getall();
+    }
+    public function create(Request $request){
+        if($request->error) return $request->error;
         LaravelGmail::makeToken();
         return redirect(route('user.token.get'));
     }

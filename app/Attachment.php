@@ -9,6 +9,7 @@ class Attachment extends Model
     protected $fillable=['email_id','path','name','type'];
 
     public function email(){
-        $this->belongsTo(Email::class);
+        return $this->belongsTo(Email::class);
     }
+
 }

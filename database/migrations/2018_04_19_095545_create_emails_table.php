@@ -19,6 +19,9 @@ class CreateEmailsTable extends Migration
             $table->string('name');
             $table->string('subject');
             $table->string('box');
+            $table->integer('box_id');
+            $table->boolean('is_unread'); //
+            $table->date('dated');
             $table->integer('account_id');
             $table->timestamps();
         });

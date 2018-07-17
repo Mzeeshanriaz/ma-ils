@@ -1,10 +1,18 @@
 <?php
 namespace App\Http\Controllers;
+use App\Account;
 use App\Attachment;
+use App\Email;
+use Dacastro4\LaravelGmail\Facade\LaravelGmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 class AttachmentController extends Controller
 {
+    public function __construct()
+    {
+        return $this->middleware('IsGmailLogin');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -46,7 +54,6 @@ class AttachmentController extends Controller
     {
         return Storage::download($attachment->path);
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -57,7 +64,6 @@ class AttachmentController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -67,9 +73,8 @@ class AttachmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-    }
 
+    }
     /**
      * Remove the specified resource from storage.
      *
